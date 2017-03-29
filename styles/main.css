@@ -61,6 +61,12 @@ body.landing{
     color: rgb(233,50,117);
 }
 
+.navbar .links-container .navbar-link:active{
+    background-color: white;
+    color: rgb(233,50,117);
+}
+
+
 .hero-content{
     position: relative;
     min-height: 600px;
