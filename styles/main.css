@@ -128,7 +128,7 @@ body.landing{
         padding-left: 1rem;
         padding-right: 1rem;
     }
-    .column{width: 100%;}
+    .column.full{width: 100%;}
     .column.two-thirds{width:66.7%;}
     .column.half{width: 33.3%}
     .column.third{width: 33.3%}
