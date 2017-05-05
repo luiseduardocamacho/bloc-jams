@@ -32,7 +32,23 @@ var albumMarconi = {
 };
 
 
+var albumCabrera = {
+    title: 'Tigers',
+    artist: 'Homerun man',
+    label: 'Detroit',
+    year: '2003',
+    albumArtURL: 'assets/images/album_covers/15.png',
+    songs: [
+        {title: 'First Base', duration: '4:26'},
+        {title: 'Right Field', duration: '3:14'},
+        {title: 'Home Run', duration: '5:01'},
+        {title: 'Grand Slam', duration: '3:21'},
+        {title: 'Double Play', duration: '2:15'},
+        {title: 'Triple play', duration: '2:15'},
+        ]
+};
 
+var albumArray = [albumPicasso, albumMarconi, albumCabrera];
 
 var createSongRow = function(songNumber, songName, songLength){
     var template = 
@@ -69,5 +85,20 @@ var setCurrentAlbum = function(album){
 };
 
 window.onload = function(){
-    setCurrentAlbum(albumPicasso);
+    setCurrentAlbum(albumCabrera);
 };
+
+
+var rotateArray = function(arr){
+    
+    arr.push(arr.shift())
+        setCurrentAlbum(arr[0]);
+        return arr;
+};
+
+document.getElementsByClassName('album-cover-art')[0].addEventListener("click",function(){rotateArray(albumArray);});
+    
+    
+ 
+    
+    
