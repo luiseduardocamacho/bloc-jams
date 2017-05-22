@@ -102,7 +102,25 @@ var albumCabrera = {
         ]
 };
 
+// Elements we'll be adding listeners to
+var songListContainer = document.getElementsByClassName('album-view-song-list')[0];
+var songRows = document.getElementsByClassName('album-view-song-item');
+var playButtonTemplate = '<a class="album-song-button"><span class="ion-play"></span></a>';
+var pauseButtonTemplate = '<a class="album-song-button"><span class="ion-pause"></span></a>';
+
+// Store state of playing songs
+var currentlyPlayingSong = null;
+
+// Used for rotate array function
 var albumArray = [albumPicasso, albumMarconi, albumCabrera];
+
+// FUNCTIONS START HERE
+var rotateArrayClickListener = function(){
+  document.getElementsByClassName('album-cover-art')[0]
+          .addEventListener("click", function(){
+            rotateArray(albumArray);
+  });
+};
 
 var createSongRow = function(songNumber, songName, songLength){
     var template =
@@ -138,32 +156,106 @@ var setCurrentAlbum = function(album){
     }
 };
 
-// Elements we'll be adding listeners to
-
-window.onload = function() {
-  var songListContainer = document.getElementsByClassName('album-view-song-list')[0];
-  var songRows = document.getElementsByClassName('album-view-song-item');
-  var playButtonTemplate = '<a class="album-song-button"><span class="ion-play"></span></a>';
-
-  setCurrentAlbum(albumCabrera);
-  document.getElementsByClassName('album-cover-art')[0].addEventListener("click",function(){rotateArray(albumArray);});
-
+var setButtonMouseListener = function(){
   for(var i = 0; i < songRows.length; i++){
     songRows[i].addEventListener('mouseleave', function(event){
-      this.children[0].innerHTML = this.children[0].getAttribute('data-song-number');
+      console.log('event.target= ' + event.target)
+      var songItem = getSongItem(event.target);
+      var songItemNumber = songItem.getAttribute('data-song-number');
+      if (songItemNumber !== currentlyPlayingSong){
+        songItem.innerHTML = songItemNumber;
+      }
+      else if (songItemNumber === currentlyPlayingSong){
+        songItem.innerHTML = pauseButtonTemplate;
+      }
+  });
+
+    songRows[i].addEventListener('click',function(event){
+      console.log('Thing that I click', event.target);
+      clickHandler(event.target); // Triggers when the songrow is clicked
     });
   }
 
   songListContainer.addEventListener('mouseover', function(event){
     if (event.target.parentElement.className === 'album-view-song-item'){
       event.target.parentElement.querySelector('.song-item-number').innerHTML = playButtonTemplate;
+      var songItem = getSongItem(event.target);
+            console.log('Mouseleave currently playing song: ' + currentlyPlayingSong)
+            if (songItem.getAttribute('data-song-number') !== currentlyPlayingSong) {
+                songItem.innerHTML = playButtonTemplate;
+            }
+            else if(songItem.getAttribute('data-song-number') === currentlyPlayingSong){
+              songItem.innerHTML = pauseButtonTemplate;
+            }
     }
   });
-};
-
+}
 
 var rotateArray = function(arr){
     arr.push(arr.shift())
         setCurrentAlbum(arr[0]);
+        setButtonMouseListener();
+        currentlyPlayingSong = null;
         return arr;
+
+};
+
+var findParentByClassName = function(element, targetClass) {
+  if (element) {
+    var currentParent = element.parentElement;
+    while (currentParent.className !== targetClass && currentParent.className !== null) {
+        currentParent = currentParent.parentElement;
+      }
+      return currentParent;
+  }
+};
+
+var getSongItem = function(element) {
+  console.log('element.classname= ' + element.className)
+  switch (element.className) {
+      case 'album-song-button':
+      case 'ion-play':
+      case 'ion-pause':
+          return findParentByClassName(element, 'song-item-number');
+      case 'album-view-song-item':
+          return element.querySelector('.song-item-number');
+      case 'song-item-title':
+      case 'song-item-duration':
+          return findParentByClassName(element, 'album-view-song-item').querySelector('.song-item-number');
+      case 'song-item-number':
+          return element;
+      default:
+          return;
+  }
+};
+
+var clickHandler = function(targetElement){
+  console.log('Click handler triggered')
+  var songItem = getSongItem(targetElement);
+
+  if (currentlyPlayingSong === null){
+    songItem.innerHTML = pauseButtonTemplate;
+    currentlyPlayingSong = songItem.getAttribute('data-song-number');
+    console.log('Click Handler playing song is:', currentlyPlayingSong);
+  }
+  else if (currentlyPlayingSong === songItem.getAttribute('data-song-number')){
+    songItem.innerHTML = playButtonTemplate;
+    currentlyPlayingSong = null;
+    console.log('Click Handler playing song is:', currentlyPlayingSong);
+  }
+  else if (currentlyPlayingSong !== songItem.getAttribute('data-song-number')){
+    var currentlyPlayingSongElement = document.querySelector('[data-song-number="' + currentlyPlayingSong + '"]');
+    currentlyPlayingSongElement.innerHTML = currentlyPlayingSongElement.getAttribute('data-song-number');
+    songItem.innerHTML = pauseButtonTemplate;
+    currentlyPlayingSong = songItem.getAttribute('data-song-number');
+    console.log('Click Handler playing song is:', currentlyPlayingSong);
+  }
+};
+
+
+window.onload = function() {
+  setCurrentAlbum(albumCabrera);
+  setButtonMouseListener();
+  rotateArrayClickListener();
+
 };
