@@ -201,13 +201,38 @@ var rotateArray = function(arr){
 };
 
 var findParentByClassName = function(element, targetClass) {
+  console.log(element)
   if (element) {
-    var currentParent = element.parentElement;
-    while (currentParent.className !== targetClass && currentParent.className !== null) {
-        currentParent = currentParent.parentElement;
-      }
-      return currentParent;
-  }
+        var currentParent = element.parentElement;
+          if (currentParent === null){
+            console.log("No parent found.")
+          }
+          while ((currentParent) && currentParent.className !== targetClass) {
+            currentParent = currentParent.parentElement;
+            
+          }
+          if (!currentParent) {
+            console.log('No parent found with that class name');
+          }
+        return currentParent;
+    }
+
+  // if (element) {
+  //   var currentParent = element.parentElement;
+  //
+  //     while (currentParent.className !== targetClass && currentParent.className !== null) {
+  //       if (currentParent.className === null){
+  //         console.log("No parent found.")
+  //       }
+  //       else if (currentParent.className !== targetClass){
+  //         currentParent = currentParent.parentElement;
+  //       }
+  //       else {
+  //         console.log("No parent found with that class name")
+  //       }
+  //     }
+  //     return currentParent;
+  // }
 };
 
 var getSongItem = function(element) {
