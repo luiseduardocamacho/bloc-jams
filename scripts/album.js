@@ -12,6 +12,7 @@ var currentSoundFile = null;
 var currentVolume = 80;
 var $previousButton = $('.main-controls .previous');
 var $nextButton = $('.main-controls .next');
+var $playPause = $('.main-controls .play-pause');
 
 
 // Used for rotate array function
@@ -204,15 +205,31 @@ var setVolume = function (volume) {
   }
 };
 
-
-
 var getSongNumberCell = function(number){
   return $('.song-item-number[data-song-number="' + number + '"]');
 }
+
+var togglePlayFromPlayerBar = function(){
+  if (currentSoundFile.isPaused()){
+    var $currentSongNumberCell = getSongNumberCell(currentlyPlayingSongNumber);
+    $currentSongNumberCell.html(pauseButtonTemplate);
+    $playPause.html(playerBarPauseButton);
+    currentSoundFile.play();
+  }
+  else if (currentSoundFile && !currentSoundFile.isPaused()){
+    var $currentSongNumberCell = getSongNumberCell(currentlyPlayingSongNumber);
+    $currentSongNumberCell.html(playButtonTemplate);
+    $playPause.html(playerBarPlayButton);
+    currentSoundFile.pause();
+  }
+};
 
 $(document).ready(function() {
   setCurrentAlbum(albumPicasso);
   $previousButton.click(previousSong);
   $nextButton.click(nextSong);
   rotateArrayClickListener();
+  $playPause.click(function(){
+    togglePlayFromPlayerBar();
+  })
 });
